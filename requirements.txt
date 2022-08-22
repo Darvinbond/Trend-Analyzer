@@ -1,0 +1,7 @@
+django-dictionaryfield
+torch
+scikit-learn
+numpy 
+pandas
+openpyxl
+pickle

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{%load static%}
+
+{%block script%}
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="{% static 'js/auto_upload.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+{%endblock script%}
+
+{%block title%}Upload{%endblock title%}
+
+{%block content%}
+
+<div class="w-full bfore flex justify-center item-center flex-col">
+    <div class="hidden ldn absolute top-0 z-20 h-screen w-full bg-black bg-opacity-50 flex flex-col justify-center item-center">
+        <div class="m-auto">
+        <div class="m-auto font-extrabold text-4xl text-gray-100 flex">please wait</div>
+        <div class="m-auto font-extrabold text-4xl text-gray-50 flex justify-center item-center gap-4"><div class="animate-ping">.</div><div class="animate-ping">.</div><div class="animate-ping">.</div></div>
+        </div>
+    </div>
+    <label for="file" class="w-1/3 mt-10 border-2 border-gray-400 p-8 bg-gray-200 hover:bg-gray-100 transition duration-300 cursor-pointer overflow-hidden m-auto flex justify-center item-center">
+        <img src="{% static 'upload.svg' %}" alt="upload illustration">
+    </label>
+    <div class="m-auto mt-4 text-gray-900 text-xl font-extralight">Upload *Excel File</div>
+    <form method="POST" action="api/">
+        <input id="file" name="file" onchange="upload()" class="file" type="file" hidden/>
+    </form>
+    
+</div>
+<div class="after hidden pt-5 w-full h-full px-44 overflow-hidden">
+    <div class="w-full h-full flex flex-col gap-6 overflow-y-scroll">
+    {% for key, values in request.session.columns.items %}
+        <div class="w-full bg-gray-200 overflow-hidden h-20 rounded-md shadow-lg flex flex-row justify-between item-center px-5 pb-10 pt-5">
+            <div class="text-xl my-auto">{{ values }}</div>
+            <div onclick="get_plot('{{values}}')" class="bg-purple-600 h-fit w-32 py-1 pl-1 rounded-md flex cursor-pointer hover:bg-purple-700 transition duration-300">
+                <svg class="w-6 text-gray-50 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                view trend
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+<div class="hidden cht absolute top-0 z-20 h-screen w-full bg-black bg-opacity-50 px-24 flex flex-col justify-center item-center">
+    <div class="w-full z-20 h-20 flex flex-row justify-end item-start">
+        <div onclick="ex()" class="text-gray-50 underline underline-offset-8 h-fit hover:underline-offset-1 transition duration-500 text-md font-semibold cursor-pointer">Exit</div>
+    </div>
+    <div id="chartContainer" class="rounded-xl bg-gray-100" style="height: 500px; width: 100%;"></div>
+</div>
+
+{%endblock content%}
