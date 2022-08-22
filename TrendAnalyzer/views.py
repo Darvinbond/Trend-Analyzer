@@ -40,9 +40,11 @@ def Upload(request):
         plot_data = StripData(data, request.POST['name'])
         Oplot = plot_data['config']
         Nplot = plot_data['config_again']
-        dataset = plot_data['dataset']
-        columns = list(dataset.columns)
-        columns = dict(enumerate(columns[1:]))
+        # dataset = plot_data['dataset']
+        # columns = list(dataset.columns)
+        # columns = dict(enumerate(columns[1:]))
+        print(plot_data['col'])
+        columns = dict(enumerate(list(plot_data['col'])))
         # print(Nplot)
         request.session['columns'] = dict(columns)
         # request.session['plot_data'] = dict(Oplot)
@@ -57,8 +59,10 @@ def Upload(request):
 def StripData(file, name):
   BASE_DIR = Path(__file__).resolve().parent.parent
   # print(BASE_DIR)
-  config = pickle.load(open(str(BASE_DIR) + '/models/configo.pickle', 'rb'))
+  config = pickle.load(open(str(BASE_DIR) + '/models/config.pickle', 'rb'))
   dataset = pnd.read_excel(file)
+  dataset = pnd.DataFrame(np.array(dataset)[2:, :], columns=np.array(dataset)[1])
+  colm = np.array(dataset.columns)
 
   # Datasets.objects.create(name=name, data=config)
 
@@ -100,7 +104,7 @@ def StripData(file, name):
     # Columns.objects.create(name=cols, data=config[cols])
       
 
-  return {'dataset': dataset, 'config': config, 'config_again': config_again}
+  return {'col': colm, 'config': config, 'config_again': config_again}
   # return {'dataset': dataset, 'config_again': config_again}
 
 
@@ -108,7 +112,7 @@ def StripData(file, name):
 def get_plot(request):
   BASE_DIR = Path(__file__).resolve().parent.parent
   # print(BASE_DIR)
-  config = pickle.load(open(str(BASE_DIR) + '/models/configo.pickle', 'rb'))
+  config = pickle.load(open(str(BASE_DIR) + '/models/config.pickle', 'rb'))
 
 
   name = request.POST['name'].replace(" ", "")
@@ -119,6 +123,7 @@ def get_plot(request):
   #     data = config[i]
 
   # print(data)
+  # config = pd.DataFrame(np.array(dataset)[2:, :], columns=np.array(dataset)[1])
   plot_data = dict(config[name])
   # print(plot_data)
 
