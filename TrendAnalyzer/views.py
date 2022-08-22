@@ -43,7 +43,7 @@ def Upload(request):
         # dataset = plot_data['dataset']
         # columns = list(dataset.columns)
         # columns = dict(enumerate(columns[1:]))
-        print(plot_data['col'])
+        # print(plot_data['col'])
         columns = dict(enumerate(list(plot_data['col'])))
         # print(Nplot)
         request.session['columns'] = dict(columns)
@@ -62,7 +62,7 @@ def StripData(file, name):
   config = pickle.load(open(str(BASE_DIR) + '/models/config.pickle', 'rb'))
   dataset = pnd.read_excel(file)
   dataset = pnd.DataFrame(np.array(dataset)[2:, :], columns=np.array(dataset)[1])
-  colm = np.array(dataset.columns)
+  colm = np.array(dataset.columns[1:])
 
   # Datasets.objects.create(name=name, data=config)
 
@@ -76,6 +76,9 @@ def StripData(file, name):
     model.load_state_dict(checkpoint)
 
     new_date_12 = config[cols]['x04']
+    
+    
+    new_date_12[0] = config[cols]['x04'][1] - relativedelta(months=1)
 
     last_5 = list(config[cols]['y03'])[-5:]
 
@@ -116,6 +119,10 @@ def get_plot(request):
 
 
   name = request.POST['name'].replace(" ", "")
+
+  cnf = config[name] 
+
+  cnf['x04'][0] = cnf['x04'][1] - relativedelta(months=1)
   # plt = request.session.get('plot_data')
   # print(name)
   # for i in config:
@@ -124,7 +131,7 @@ def get_plot(request):
 
   # print(data)
   # config = pd.DataFrame(np.array(dataset)[2:, :], columns=np.array(dataset)[1])
-  plot_data = dict(config[name])
+  plot_data = dict(cnf)
   # print(plot_data)
 
   for i in plot_data:
