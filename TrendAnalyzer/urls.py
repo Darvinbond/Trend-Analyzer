@@ -26,4 +26,3 @@ urlpatterns = [
     path('', Upload),
     path('get_plot', get_plot),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# urlpatterns += staticfiles_urlpatterns()
